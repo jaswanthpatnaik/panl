@@ -6,3 +6,4 @@ yara-python
 oletools
 pikepdf
 pyinstaller
+gunicorn
