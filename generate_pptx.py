@@ -31,7 +31,7 @@ def create_presentation():
         tf = tb.text_frame
         tf.word_wrap = True
         p = tf.paragraphs[0]
-        p.text = "PNAL  |  " + title_text
+        p.text = "PANL  |  " + title_text
         p.font.name = 'Arial'
         p.font.size = Pt(22)
         p.font.bold = True
@@ -44,7 +44,7 @@ def create_presentation():
     # Subtitle
     tb_sub = slide1.shapes.add_textbox(Inches(1.0), Inches(2.2), Inches(11.333), Inches(0.5))
     p_sub = tb_sub.text_frame.paragraphs[0]
-    p_sub.text = "PROACTIVE NETWORK & ANALYSIS LABORATORY"
+    p_sub.text = "PDF ANALYSIS TOOLKIT"
     p_sub.font.name = 'Arial'
     p_sub.font.size = Pt(14)
     p_sub.font.bold = True
@@ -56,7 +56,7 @@ def create_presentation():
     tf_title = tb_title.text_frame
     tf_title.word_wrap = True
     p_title = tf_title.paragraphs[0]
-    p_title.text = "Forensic Malware\nAnalysis Engine"
+    p_title.text = "Forensic Document\nAnalysis Engine"
     p_title.font.name = 'Arial'
     p_title.font.size = Pt(56)
     p_title.font.bold = True
@@ -112,7 +112,7 @@ def create_presentation():
         p2.space_after = Pt(12)
         
     # Flowchart Image (Right)
-    img_path2 = "/home/lenovo/.gemini/antigravity/scratch/PNAL_Submission/diagrams/pnal_architecture_flowchart.png"
+    img_path2 = "/home/lenovo/.gemini/antigravity/scratch/PANL_Submission/diagrams/panl_architecture_flowchart.png"
     if os.path.exists(img_path2):
         slide2.shapes.add_picture(img_path2, Inches(6.25), Inches(1.5), Inches(6.333), Inches(5.0))
         
@@ -149,10 +149,10 @@ def create_presentation():
         p2.space_after = Pt(12)
         
     # Flowchart Image (Right)
-    img_path3 = "/home/lenovo/.gemini/antigravity/scratch/PNAL_Submission/diagrams/pnal_sandbox_flowchart.png"
+    img_path3 = "/home/lenovo/.gemini/antigravity/scratch/PANL_Submission/diagrams/panl_sandbox_flowchart.png"
     if os.path.exists(img_path3):
         slide3.shapes.add_picture(img_path3, Inches(6.25), Inches(1.5), Inches(6.333), Inches(5.0))
-
+ 
     # ==================== SLIDE 4: Forensic Dashboard ====================
     slide4 = prs.slides.add_slide(blank_layout)
     set_slide_background(slide4)
@@ -186,7 +186,7 @@ def create_presentation():
         p2.space_after = Pt(12)
         
     # Mockup Image (Right)
-    img_path4 = "/home/lenovo/.gemini/antigravity/scratch/PNAL_Submission/diagrams/pnal_dashboard_mockup.png"
+    img_path4 = "/home/lenovo/.gemini/antigravity/scratch/PANL_Submission/diagrams/panl_dashboard_mockup.png"
     if os.path.exists(img_path4):
         slide4.shapes.add_picture(img_path4, Inches(6.25), Inches(1.5), Inches(6.333), Inches(5.0))
 
@@ -278,14 +278,14 @@ def create_presentation():
     p.space_after = Pt(20)
     
     p2 = tf_info6.add_paragraph()
-    p2.text = "PNAL compiles into a fully self-contained, portable Windows binary (pnal.exe) utilizing automated GitHub Actions. All required resources, YARA rules, Flask routes, HTML templates, and static engines are integrated directly inside the executable. This eliminates external runtime setups—providing tactical intelligence response capabilities to forensic specialists on completely air-gapped security operations."
+    p2.text = "PANL compiles into a fully self-contained, portable Windows binary (panl.exe) utilizing automated GitHub Actions. All required resources, YARA rules, Flask routes, HTML templates, and static engines are integrated directly inside the executable. This eliminates external runtime setups—providing tactical intelligence response capabilities to forensic specialists on completely air-gapped security operations."
     p2.font.name = 'Arial'
     p2.font.size = Pt(18)
     p2.font.color.rgb = GRAY
     p2.line_spacing = 1.5
     
     # Save Presentation
-    dest_path = "/home/lenovo/.gemini/antigravity/scratch/PNAL_Submission/presentation.pptx"
+    dest_path = "/home/lenovo/.gemini/antigravity/scratch/PANL_Submission/presentation.pptx"
     prs.save(dest_path)
     print(f"[SUCCESS] Presentation saved to {dest_path}")
 
