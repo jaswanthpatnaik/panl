@@ -1,8 +1,9 @@
 import sqlite3
 import json
 import os
+from panl.modules.utils import get_user_path
 
-DB_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), 'panl.db')
+DB_PATH = get_user_path('panl.db')
 
 def init_db():
     conn = sqlite3.connect(DB_PATH)

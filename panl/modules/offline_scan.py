@@ -10,7 +10,8 @@ def run_offline_scan(filepath):
     }
     
     # 1. YARA Scanning (Safe Loading)
-    rules_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), 'rules')
+    from panl.modules.utils import get_resource_path
+    rules_dir = get_resource_path('rules')
     if os.path.exists(rules_dir):
         for f in os.listdir(rules_dir):
             if f.endswith('.yar'):

@@ -13,9 +13,8 @@ from panl.modules.office import analyze_office_doc
 from panl.modules.expert_system import generate_expert_summary
 
 def get_config():
-    # Standardize to project root
-    base_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-    config_path = os.path.join(base_dir, 'config.json')
+    from panl.modules.utils import get_user_path
+    config_path = get_user_path('config.json')
     if os.path.exists(config_path):
         try:
             with open(config_path, 'r') as f:

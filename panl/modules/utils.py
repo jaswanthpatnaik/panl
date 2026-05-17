@@ -11,6 +11,23 @@ from typing import Dict, List, Optional, Tuple
 
 logger = logging.getLogger(__name__)
 
+def get_resource_path(relative_path: str) -> str:
+    """ Get absolute path to resource, works for dev and for PyInstaller """
+    import sys
+    if hasattr(sys, '_MEIPASS'):
+        return os.path.abspath(os.path.join(sys._MEIPASS, relative_path))
+    base_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    return os.path.abspath(os.path.join(base_path, relative_path))
+
+def get_user_path(relative_path: str) -> str:
+    """ Get absolute path to user-writable files (db, uploads, config), works for dev and for PyInstaller """
+    import sys
+    if hasattr(sys, '_MEIPASS'):
+        base_path = os.path.dirname(sys.executable)
+    else:
+        base_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    return os.path.abspath(os.path.join(base_path, relative_path))
+
 REQUIRED_TOOLS = {
     "pdfid":          "pdfid (pip install pdfid)",
     "pdf-parser.py":  "pdf-parser.py (pip install pdf-parser)",

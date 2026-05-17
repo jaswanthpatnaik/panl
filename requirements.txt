@@ -1,0 +1,8 @@
+flask
+rich
+requests
+PyPDF2
+yara-python
+oletools
+pikepdf
+pyinstaller

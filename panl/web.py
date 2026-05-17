@@ -17,15 +17,15 @@ from panl.modules.office import analyze_office_doc
 from panl.modules.expert_system import generate_expert_summary
 from panl.database import init_db, save_scan, get_all_scans, get_scan_by_hash
 
-app = Flask(__name__)
+from panl.modules.utils import get_resource_path, get_user_path
+
+app = Flask(__name__, template_folder=get_resource_path(os.path.join('panl', 'templates')))
 app.secret_key = 'panl_nextgen_secure_key'
 
 # Initialization
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-PROJECT_ROOT = os.path.dirname(BASE_DIR)
-UPLOAD_FOLDER = os.path.join(PROJECT_ROOT, 'uploads')
-CONFIG_FILE = os.path.join(PROJECT_ROOT, 'config.json')
-RULES_DIR = os.path.join(PROJECT_ROOT, 'rules')
+UPLOAD_FOLDER = get_user_path('uploads')
+CONFIG_FILE = get_user_path('config.json')
+RULES_DIR = get_resource_path('rules')
 
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
