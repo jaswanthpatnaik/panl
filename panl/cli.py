@@ -5,6 +5,10 @@ import argparse
 import webbrowser
 import threading
 import subprocess
+
+# Ensure project root is in sys.path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from rich.console import Console
 from rich.table import Table
 from rich.panel import Panel
