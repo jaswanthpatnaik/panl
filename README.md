@@ -30,17 +30,17 @@ sudo bash install.sh
 ### Interactive Intelligence Hub (Web Dashboard)
 Launch the professional triage dashboard:
 ```bash
-pnal dashboard
+panl dashboard
 ```
 
 ### Forensic CLI Analysis
 Perform a surgical scan directly from the terminal:
 ```bash
-pnal analyze suspicious_doc.pdf
+panl analyze <file_location>
 ```
 
 ## ⚖️ License
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ---
-**Disclaimer**: PNAL is a forensic tool for security professionals. Always handle suspicious samples within isolated environments.
+**Disclaimer**: PANL is a forensic tool for security professionals. Always handle suspicious samples within isolated environments.
