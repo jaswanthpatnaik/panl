@@ -1,6 +1,6 @@
-# 🛡️ PNAL: Proactive Network & Analysis Laboratory
+# 🛡️ PANL: Pdf ANaLysis toolkit
 
-**PNAL** is an autonomous, high-fidelity forensic intelligence suite designed to audit and neutralize document-based threats (PDF & Office) in air-gapped or high-security environments.
+**PANL** is an autonomous, high-fidelity forensic intelligence suite designed to audit and neutralize document-based threats (PDF & Office) in air-gapped or high-security environments.
 
 Unlike traditional scanners that rely on historical signatures, PNAL performs a deep **DNA Audit** of file structures to identify zero-day exploits, hidden droppers, and behavioral anomalies.
 
@@ -14,12 +14,12 @@ Unlike traditional scanners that rely on historical signatures, PNAL performs a 
 
 ## 🛠️ Installation
 
-PNAL is designed to be self-contained and portable.
+PANL is designed to be self-contained and portable.
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/pnal.git
-cd pnal
+git clone https://github.com/jaswanthpatnaik/panl.git
+cd panl
 
 # Run the hardened installer (Requires sudo for global commands)
 sudo bash install.sh
