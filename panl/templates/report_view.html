@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Report | {{ data.filename }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030406;
+            --surface: #0a0c10;
+            --accent: {{ config.accent_color or '#00f2ff' }};
+            --danger: #ff0055;
+            --text: #f0f0f0;
+            --text-dim: #808896;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            margin: 0;
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            min-height: 100vh;
+        }
+
+        aside {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        main { padding: 3rem 5rem; overflow-y: auto; }
+
+        .btn {
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 1rem; border-radius: 12px;
+            font-weight: 700; text-decoration: none; font-size: 0.85rem;
+            transition: 0.3s; cursor: pointer; border: 1px solid transparent;
+            width: 100%; box-sizing: border-box; text-align: center;
+            text-transform: uppercase; letter-spacing: 1px;
+        }
+
+        .btn-primary { background: var(--accent); color: #000; box-shadow: 0 0 20px rgba(0, 242, 255, 0.15); }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(0, 242, 255, 0.3); }
+        
+        .btn-outline { border: 1px solid var(--border); color: var(--text); background: var(--glass); }
+        .btn-outline:hover { border-color: var(--accent); color: var(--accent); background: rgba(0, 242, 255, 0.05); }
+        
+        .btn-danger { border-color: var(--danger); color: var(--danger); background: rgba(255, 0, 85, 0.05); }
+        .btn-danger:hover { background: var(--danger); color: white; }
+
+        .header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 3rem; }
+        .title-block h1 { font-family: 'Outfit', sans-serif; font-size: 2.5rem; margin: 0; }
+        .hash-tag { font-family: monospace; font-size: 0.85rem; color: var(--text-dim); background: var(--glass); padding: 0.4rem 0.8rem; border-radius: 6px; margin-top: 1rem; display: inline-block; }
+
+        /* Risk Indicator */
+        .risk-pulse {
+            width: 120px; height: 120px;
+            border-radius: 50%;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            border: 4px solid var(--accent);
+            box-shadow: 0 0 30px rgba(0, 242, 255, 0.1);
+            position: relative;
+        }
+        .risk-value { font-size: 3rem; font-weight: 800; font-family: 'Outfit'; }
+        .risk-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); }
+
+        /* Intelligence Panels */
+        .panel-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 2rem; }
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2rem;
+            position: relative;
+        }
+
+        .panel-title {
+            font-family: 'Outfit', sans-serif; font-size: 0.8rem; font-weight: 800;
+            text-transform: uppercase; letter-spacing: 2px; color: var(--accent);
+            margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px;
+        }
+
+        /* Expert Insight Section */
+        .expert-box {
+            background: linear-gradient(135deg, rgba(0, 242, 255, 0.05), rgba(112, 0, 255, 0.05));
+            border: 1px solid rgba(0, 242, 255, 0.2);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 3rem;
+        }
+        .expert-content { line-height: 1.8; color: #ced4da; font-size: 1.05rem; }
+
+        /* Findings List */
+        .finding-item {
+            padding: 1.2rem; background: var(--glass); border-radius: 12px; margin-bottom: 1rem;
+            border-left: 4px solid var(--accent);
+        }
+        .finding-why { font-weight: 700; margin-bottom: 0.5rem; display: block; }
+        .tag { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.7rem; background: rgba(0, 242, 255, 0.1); color: var(--accent); margin-right: 5px; margin-top: 5px; }
+
+        /* Print Styling */
+        @media print {
+            aside, .nav-actions, .surgical-tools { display: none !important; }
+            main { padding: 0 !important; }
+            body { background: white; color: black; display: block; }
+            .panel { border: 1px solid #ddd; background: white; break-inside: avoid; }
+        }
+
+    </style>
+</head>
+<body>
+    <aside>
+        <a href="/" style="text-decoration: none;">
+            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 2rem;">
+                <div style="width: 40px; height: 40px; background: var(--accent); color: black; display: flex; align-items: center; justify-content: center; border-radius: 10px; font-weight: 800; font-family: 'Outfit';">P</div>
+                <div style="font-family: 'Outfit'; font-weight: 800; font-size: 1.5rem; color: var(--accent); letter-spacing: 1px;">PNAL</div>
+            </div>
+        </a>
+        
+        <div style="margin-top: 2rem;">
+            <a href="/sandbox/{{ data.filename }}" class="btn btn-primary">
+                LAUNCH SAFE SANDBOX
+            </a>
+        </div>
+
+        <div style="margin-top: auto; display: flex; flex-direction: column; gap: 10px;">
+            <button onclick="window.print()" class="btn btn-outline">EXPORT TO PDF</button>
+            <a href="/" class="btn btn-outline">BACK TO HUB</a>
+        </div>
+    </aside>
+
+    <main>
+        <div class="header">
+            <div class="title-block">
+                <h1>{{ data.filename }}</h1>
+                <div class="hash-tag">SHA256: {{ data.sha256 }}</div>
+                <div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 5px;">ANALYST: {{ config.analyst_name or 'UNASSIGNED' }}</div>
+            </div>
+            
+            <div class="risk-pulse" style="border-color: {{ 'var(--danger)' if data.risk_score.severity == 'Unsafe' else 'var(--accent)' }}">
+                <div class="risk-value" style="color: {{ 'var(--danger)' if data.risk_score.severity == 'Unsafe' else 'var(--accent)' }}">{{ data.risk_score.score }}</div>
+                <div class="risk-label" style="color: {{ 'var(--danger)' if data.risk_score.severity == 'Unsafe' else 'var(--accent)' }}">{{ data.risk_score.severity }}</div>
+            </div>
+        </div>
+
+        <section class="expert-box">
+            <div class="panel-title">🤖 AI-DRIVEN FORENSIC INSIGHT</div>
+            <div class="expert-content">
+                {{ data.ai_summary | safe }}
+            </div>
+        </section>
+
+        <div class="panel-grid">
+            <div class="panel">
+                <div class="panel-title">Forensic Behavioral Matrix</div>
+                {% for finding in data.behavior.detailed_findings %}
+                <div class="finding-item">
+                    <span class="finding-why">{{ finding.why }}</span>
+                    {% for action in finding.actions %}
+                    <span class="tag">{{ action }}</span>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">Online Reputation</div>
+                {% if data.vt_results %}
+                <div style="text-align: center; padding: 1rem 0;">
+                    {% if not data.vt_results.error %}
+                    <div style="font-size: 3rem; font-weight: 800; color: var(--danger);">{{ data.vt_results.malicious }}</div>
+                    <div style="color: var(--text-dim); font-size: 0.8rem;">MALICIOUS DETECTIONS</div>
+                    {% else %}
+                    <div style="font-size: 1.2rem; color: var(--text-dim); margin-bottom: 0.5rem;">STATUS: {{ data.vt_results.status.upper() }}</div>
+                    <p style="font-size: 0.8rem; color: var(--text-dim);">{{ data.vt_results.error }}</p>
+                    {% endif %}
+                    
+                    {% set vt_link = data.vt_results.link if data.vt_results.link else 'https://www.virustotal.com/gui/file/' + data.sha256 %}
+                    
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem; margin-top: 1rem;">
+                        <a href="{{ vt_link }}" target="_blank" style="color: var(--accent); font-size: 0.8rem; text-decoration: none; display: block; border: 1px solid var(--accent); padding: 8px; border-radius: 8px; font-weight: 700;">VIEW ON VIRUSTOTAL</a>
+                        
+                        {% if data.vt_results.status == 'not_found' %}
+                        <button onclick="triggerVTScan('{{ data.sha256 }}')" id="vt-scan-btn" style="background: var(--accent); color: #000; border: none; padding: 8px; border-radius: 8px; font-size: 0.8rem; font-weight: 800; cursor: pointer; transition: 0.2s;">TRIGGER LIVE SCAN</button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% else %}
+                <p style="color: var(--text-dim); text-align: center; padding-top: 1rem;">No online data available.</p>
+                {% endif %}
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">Digital DNA</div>
+                <div style="display: grid; gap: 1rem;">
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-dim);">FILE SIZE</div>
+                        <div style="font-weight: 600;">{{ data.filesize }} bytes</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.7rem; color: var(--text-dim);">MD5 HASH</div>
+                        <div style="font-family: monospace; font-size: 0.8rem;">{{ data.md5 }}</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">Local Signatures</div>
+                {% for match in data.offline_scan.yara_matches %}
+                    <div class="tag" style="display: block; margin-bottom: 5px;">{{ match.rule }}</div>
+                {% endfor %}
+                {% if not data.offline_scan.yara_matches %}
+                    <p style="color: var(--text-dim); font-size: 0.8rem;">No local signature hits.</p>
+                {% endif %}
+            </div>
+
+            <div class="panel">
+                <div class="panel-title">Heuristic & Keyword Intelligence</div>
+                {% if data.keyword_scan.suspicious_found or data.keyword_scan.raw_detections %}
+                    <ul style="list-style: none; padding: 0;">
+                        {% for kw in data.keyword_scan.suspicious_found %}
+                        <li style="color: var(--danger); font-size: 0.85rem; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 8px;">
+                            <span style="background: rgba(255, 71, 87, 0.1); padding: 2px 6px; border-radius: 4px;">{{ kw }}</span>
+                            <span style="color: var(--text-dim); font-size: 0.75rem;">{{ data.keyword_scan.counts[kw] }} instances</span>
+                        </li>
+                        {% endfor %}
+                        
+                        {% for det in data.keyword_scan.raw_detections %}
+                        <li style="color: var(--accent); font-size: 0.85rem; margin-bottom: 0.8rem; border-left: 2px solid var(--accent); padding-left: 12px;">
+                            <div style="font-weight: 800; font-size: 0.7rem; letter-spacing: 1px; color: var(--text-dim); margin-bottom: 3px;">{{ det.category.upper() }}</div>
+                            <div style="font-family: monospace; word-break: break-all; background: rgba(0, 242, 255, 0.05); padding: 4px; border-radius: 4px;">{{ det.matches | join(', ') }}</div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                {% else %}
+                    <p style="color: var(--text-dim); text-align: center; font-size: 0.8rem;">No suspicious structural or heuristic patterns detected.</p>
+                {% endif %}
+            </div>
+        </div>
+    </main>
+    <script>
+        function triggerVTScan(sha256) {
+            const btn = document.getElementById('vt-scan-btn');
+            const originalText = btn.innerText;
+            btn.innerText = "UPLOADING...";
+            btn.disabled = true;
+            btn.style.opacity = "0.5";
+
+            fetch(`/vt_upload/${sha256}`, { method: 'POST' })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.error) {
+                        btn.innerText = "ERROR: " + data.error;
+                        btn.style.background = "var(--danger)";
+                    } else {
+                        btn.innerText = "SUCCESS: SUBMITTED";
+                        btn.style.background = "#2ed573";
+                        setTimeout(() => location.reload(), 2000);
+                    }
+                })
+                .catch(err => {
+                    btn.innerText = "NETWORK ERROR";
+                    btn.style.background = "var(--danger)";
+                });
+        }
+    </script>
+</body>
+</html>

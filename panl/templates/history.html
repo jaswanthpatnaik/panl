@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Intelligence History | PNAL</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg-deep: #050608; --bg-surface: #0e1015; --accent-primary: #00f2ff; --text-main: #f0f0f0; --text-dim: #808896; --border-glass: rgba(255, 255, 255, 0.08); }
+        body { background: var(--bg-deep); color: var(--text-main); font-family: 'Space Grotesk', sans-serif; margin: 0; display: grid; grid-template-columns: 280px 1fr; height: 100vh; }
+        aside { background: var(--bg-surface); border-right: 1px solid var(--border-glass); padding: 2rem; display: flex; flex-direction: column; gap: 2rem; }
+        .nav-item { color: var(--text-dim); text-decoration: none; font-size: 0.9rem; padding: 0.8rem 1rem; border-radius: 8px; transition: 0.3s; }
+        .nav-item:hover, .nav-item.active { background: rgba(0, 242, 255, 0.05); color: var(--accent-primary); }
+        main { padding: 3rem; overflow-y: auto; }
+        .history-card { background: var(--bg-surface); border: 1px solid var(--border-glass); border-radius: 12px; padding: 1.5rem; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; }
+        .sev-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 12px; }
+        .sev-high { background: #ff0055; box-shadow: 0 0 10px #ff0055; }
+        .sev-med { background: #ffcc00; box-shadow: 0 0 10px #ffcc00; }
+        .sev-low { background: #00ff88; box-shadow: 0 0 10px #00ff88; }
+    </style>
+</head>
+<body>
+    <aside>
+        <div style="color: var(--accent-primary); font-weight: 700;">PNAL INTEL</div>
+        <nav style="margin-top: 2rem; display: flex; flex-direction: column; gap: 0.5rem;">
+            <a href="/" class="nav-item">Dashboard Home</a>
+            <a href="/history" class="nav-item active">Scan History</a>
+            <a href="/logs" class="nav-item">System Logs</a>
+            <a href="/settings" class="nav-item">Settings</a>
+        </nav>
+    </aside>
+    <main>
+        <h1>Recovered Intelligence History</h1>
+        <div style="width: 100%; max-width: 800px;">
+            {% for name, findings in results.items() %}
+            <div class="history-card">
+                <div style="display: flex; align-items: center;">
+                    <div class="sev-dot sev-{{ findings.risk_score.severity.lower()[:3] }}"></div>
+                    <div>
+                        <div style="font-weight: 600;">{{ name }}</div>
+                        <div style="font-size: 0.75rem; color: var(--text-dim);">SEVERITY: {{ findings.risk_score.severity.upper() }}</div>
+                    </div>
+                </div>
+                <a href="/report/{{ name }}" style="color: var(--accent-primary); text-decoration: none; font-size: 0.9rem; font-weight: 600;">INTEL PROFILE →</a>
+            </div>
+            {% endfor %}
+            {% if not results %}
+            <p style="color: var(--text-dim);">No previous intelligence records recovered.</p>
+            {% endif %}
+        </div>
+    </main>
+</body>
+</html>

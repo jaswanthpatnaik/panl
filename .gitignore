@@ -1,0 +1,19 @@
+# PNAL - Python Environment
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Forensic Data
+uploads/
+panl.db
+web_log.txt
+
+# Configuration (Don't leak your VT keys!)
+config.json
+
+# IDEs
+.vscode/
+.idea/
+.DS_Store

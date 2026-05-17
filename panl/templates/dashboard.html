@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>PANL | Next-Gen PDF Intelligence</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@400;600;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg: #030406;
+            --surface: #0a0c10;
+
+            --accent: {
+                    {
+                    config.accent_color or '#00f2ff'
+                }
+            }
+
+            ;
+            --accent-glow: rgba(0, 242, 255, 0.3);
+            --danger: #ff0055;
+            --text: #f0f0f0;
+            --text-dim: #808896;
+            --glass: rgba(255, 255, 255, 0.03);
+            --border: rgba(255, 255, 255, 0.08);
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Space Grotesk', sans-serif;
+            margin: 0;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Glass Sidebar */
+        aside {
+            background: var(--surface);
+            border-right: 1px solid var(--border);
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 3rem;
+        }
+
+        .logo-wrap {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.6rem;
+            letter-spacing: -1px;
+            color: var(--accent);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--accent), #7000ff);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: black;
+            box-shadow: 0 0 20px var(--accent-glow);
+        }
+
+        nav a {
+            color: var(--text-dim);
+            text-decoration: none;
+            font-size: 0.95rem;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        nav a:hover,
+        nav a.active {
+            background: var(--glass);
+            color: var(--accent);
+            border-left: 3px solid var(--accent);
+        }
+
+        /* Main Content Area */
+        main {
+            padding: 4rem;
+            overflow-y: auto;
+        }
+
+        .hero {
+            margin-bottom: 4rem;
+        }
+
+        .hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin: 0;
+        }
+
+        .hero p {
+            color: var(--text-dim);
+            font-size: 1.1rem;
+            margin-top: 1rem;
+        }
+
+        /* Upload Zone */
+        .upload-section {
+            background: var(--surface);
+            border: 2px dashed var(--border);
+            border-radius: 24px;
+            padding: 4rem;
+            text-align: center;
+            transition: 0.4s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-section:hover {
+            border-color: var(--accent);
+            background: rgba(0, 242, 255, 0.02);
+            transform: translateY(-5px);
+        }
+
+        .upload-section input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+        }
+
+        .btn-analyze {
+            background: var(--accent);
+            color: black;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-top: 2rem;
+            cursor: pointer;
+            box-shadow: 0 10px 30px var(--accent-glow);
+        }
+
+        /* History Table */
+        .history-section {
+            margin-top: 5rem;
+        }
+
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .scan-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr 100px 100px 100px;
+            align-items: center;
+            gap: 2rem;
+            margin-bottom: 1rem;
+            transition: 0.3s;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .scan-card:hover {
+            background: var(--glass);
+            border-color: var(--accent);
+        }
+
+        .scan-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .scan-hash {
+            font-family: monospace;
+            font-size: 0.8rem;
+            color: var(--text-dim);
+        }
+
+        .scan-date {
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .severity-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            text-align: center;
+        }
+
+        .severity-unsafe {
+            background: rgba(255, 0, 85, 0.1);
+            color: var(--danger);
+            border: 1px solid var(--danger);
+        }
+
+        .severity-high {
+            background: rgba(255, 140, 0, 0.1);
+            color: #ff8c00;
+            border: 1px solid #ff8c00;
+        }
+
+        .severity-medium {
+            background: rgba(255, 204, 0, 0.1);
+            color: #ffcc00;
+            border: 1px solid #ffcc00;
+        }
+
+        .severity-low {
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+        }
+    </style>
+</head>
+
+<body>
+    <aside>
+        <a href="/" style="text-decoration: none;">
+            <div class="logo-wrap">
+                <div class="logo-icon">P</div>
+                PANL
+            </div>
+        </a>
+
+        <nav>
+            <a href="/" class="active">Intelligence Hub</a>
+            <a href="/settings">System Settings</a>
+        </nav>
+    </aside>
+
+    <main>
+        <section class="hero">
+            <h1>Document Analysis</h1>
+            <p>Upload a Document to trigger deep structural, behavioral, and global signature scanning.</p>
+        </section>
+
+        <form action="/analyze" method="post" enctype="multipart/form-data">
+            <div class="upload-section">
+                <input type="file" name="file" onchange="this.form.submit()">
+                <div class="upload-icon">󰛨</div>
+                <h2 style="font-size: 1.5rem;">Drop document or click to browse</h2>
+                <p style="color: var(--text-dim);">Maximum isolation and forensic integrity guaranteed.</p>
+                <button type="submit" class="btn-analyze">INITIATE DEEP SCAN</button>
+            </div>
+        </form>
+
+        <section class="history-section">
+            <div class="history-header">
+                <h2 style="font-family: 'Outfit', sans-serif;">Intelligence Archive</h2>
+                <div style="color: var(--text-dim); font-size: 0.9rem;">{{ recent_scans|length }} TOTAL SAMPLES</div>
+            </div>
+
+            {% for scan in recent_scans %}
+            <a href="/report/{{ scan[1] }}" class="scan-card">
+                <div>
+                    <div class="scan-name">{{ scan[0] }}</div>
+                    <div class="scan-hash">{{ scan[1][:32] }}...</div>
+                </div>
+                <div class="scan-date">{{ scan[2] }}</div>
+                <div style="font-weight: 700; font-size: 1.2rem; color: var(--accent);">{{ scan[3] }}</div>
+                <div class="severity-badge severity-{{ scan[4]|lower }}">
+                    {{ scan[4] }}
+                </div>
+                <div style="color: var(--accent); font-weight: 600;">VIEW →</div>
+            </a>
+            {% endfor %}
+        </section>
+    </main>
+</body>
+
+</html>
