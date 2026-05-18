@@ -1,9 +1,5 @@
 # 🛡️ PANL (Pdf ANaLysis Toolkit)
 ### **Technical Specification & Forensic Laboratory Manual**
-*Version: 2.0.0 (Production-Grade)*
-*Author: Senior Forensic Analyst*
-
----
 
 ## 📖 Executive Summary
 Document-based malware vectors (PDFs, Microsoft Office files) remain the primary initial access vector for Advanced Persistent Threats (APTs) globally. Attackers routinely design weaponized files that evade traditional, signature-based antivirus solutions using dynamic obfuscation, steganography, and zero-day execution paths.
