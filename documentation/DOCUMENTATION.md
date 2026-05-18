@@ -1,133 +1,74 @@
-# 🛡️ PNAL: Proactive Network & Analysis Laboratory
-## **Enterprise Architectural Manual & Technical Documentation**
-*Powered by the PANL (PDF Analysis Toolkit) Forensic Engine*
+# 🛡️ PANL (Pdf ANaLysis Toolkit)
+### **Technical Specification & Forensic Laboratory Manual**
 *Version: 2.0.0 (Production-Grade)*
-*Classification: Commercial Security Standard*
+*Author: Senior Forensic Analyst*
 
 ---
 
-## 📑 1. Architectural Rebranding Memorandum
-During the software lifecycle, the core engine underwent an identity expansion:
-*   **PANL (PDF Analysis Toolkit)**: The underlying, low-level developmental library and modular scanning engine. It retains its technical namespace (`panl/` package folder) to ensure backward compatibility and prevent circular reference breaks.
-*   **PNAL (Proactive Network & Analysis Laboratory)**: The unified, commercial-grade enterprise visual suite, interactive dashboard, and command-line program presented to security analysts and forensic triagers.
+## 📖 Executive Summary
+Document-based malware vectors (PDFs, Microsoft Office files) remain the primary initial access vector for Advanced Persistent Threats (APTs) globally. Attackers routinely design weaponized files that evade traditional, signature-based antivirus solutions using dynamic obfuscation, steganography, and zero-day execution paths.
 
-This manual documents the final production-ready state of **PNAL**, detailing how its underlying **PANL** modules orchestrate to deliver air-gapped document triage, zero-trust visual sandboxing, and automated malware hunting.
+**PANL (Pdf ANaLysis Toolkit)** is a self-contained, offline-first forensic triage engine designed to audit, dissect, and identify document-based threats in air-gapped or high-security tactical environments. Rather than relying on historical reputation databases, PANL performs a deep **structural DNA audit** to capture malicious intent prior to document execution.
 
 ---
 
-## ⚙️ 2. High-Level Pipeline Architecture
-PNAL implements a highly parallelized, linear scanning pipeline that analyzes untrusted PDF and Office files. The system is designed to execute completely offline (except for an optional API correlation to VirusTotal), guaranteeing secure, leakage-free operations inside military and intelligence networks.
+## ⚙️ Architectural Overview & Pipeline
+PANL utilizes a completely decoupled, modular pipeline designed to parse untrusted binary containers safely. The engine avoids circular imports and enforces a sequential data flow, visualized in our **Engine Data Flow Diagram**:
 
-### 🔄 The Seven-Phase Triage Loop
-```mermaid
-graph TD
-    A[Untrusted Ingestion] --> B[Metadata Parser]
-    B --> C[Keyword & Threat Signature Audit]
-    C --> D[Active Payload Carving]
-    D --> E[Forensic Image Audit]
-    E --> F[YARA Binary Signatures]
-    F --> G[Zero-Trust Visual Sandbox]
-    G --> H[Expert Triage Report]
+1. **Ingestion & Parsing**: The file container is dissected at the binary level (e.g., zip-member structures for Office documents, xref/object streams for PDFs).
+2. **Metadata Audit**: Creation stamps, modifications, and software signatures are parsed to spot manipulation.
+3. **Forensic Image Audit**: Embedded visual structures (SVG/JPG/PNG) are examined for scripts and steganography.
+4. **Static & Signature Auditing**: Custom YARA signatures are loaded to scan the binary streams offline.
+5. **Active Payload Carving**: Suspicious `.bin` and OLE objects are carved out and parsed independently.
+6. **Reputation Assessment**: Optional VirusTotal lookup is engaged to correlate offline findings with global intelligence.
+7. **Zero-Trust Visual Triage**: The analyst inspects the document in a secure sandbox isolated via cryptographic Content Security Policies (CSP).
+
+---
+
+## 🛠️ Deep Dive: Core Forensic Capabilities
+
+### 1. 🔍 Active Payload Carving (OLE / Stream Extraction)
+Attackers frequently conceal secondary payloads (e.g., shellcode, PE executables, scripts) inside Office documents via OLE (Object Linking and Embedding) containers. PANL surgically audits ZIP container files:
+* Automatically identifies embedded binary files (`.bin`, `.exe`, `.dll`, `.vbs`, etc.).
+* Extracts the raw byte stream and computes its unique **SHA256 fingerprint**.
+* Exposes the carved payload directly to the analyst in the Behavioral Matrix for forensic pivoting.
+
+### 2. 🧪 Zero-Trust Sandbox & Isolation
+Opening an untrusted PDF or Office document in a standard viewer poses severe client-side exploit risks. PANL implements a **digital blast shield**:
+* **Cryptographic CSP**: Outbound network requests and dynamic inline scripts are blocked using strict HTTP Content-Security-Policy headers (`script-src 'none'`, `object-src 'self'`).
+* **Surgical Stripping**: Active triggers (like `/JS` or `/OpenAction` in PDFs) are neutralized at the byte-level before the preview is rendered.
+* **Safe Text Extraction**: Office documents are parsed to raw, human-readable text directly from their internal XML components, bypassing dangerous rendering paths completely.
+
+### 3. 🖼️ Forensic Image Audit (Visual Evasion Vectors)
+Modern threat groups often leverage embedded images to bypass text-based security filters:
+* **SVG Script Audit**: Scans vector graphics for `<script>` or `javascript:` directives.
+* **Webshell Marker Audit**: Scans image binary streams for PHP tags or execution statements (e.g., `<?php`, `eval()`).
+* **Steganography Checks**: Flags anomalously large embedded icon or image assets (>500KB) representing high-risk steganographic stowing.
+
+---
+
+## 📖 Step-by-Step Triage & TTP Detection
+
+### **Step 1: System Installation & Setup**
+Execute the unified, offline-friendly installer:
+```bash
+sudo bash install.sh
+```
+This prepares the isolated virtual environment and compiles specialized PDF and Office YARA signatures.
+
+### **Step 2: Command Line (CLI) Forensic Analysis**
+To quickly audit a file and export the raw JSON report or print a pretty terminal layout:
+```bash
+panl analyze malware_sample.pdf --json
 ```
 
-1.  **Ingestion & Dissection**: Decouples zip containers (docx, xlsx, pptx) or xref byte streams (pdf).
-2.  **Metadata Extraction**: Analyzes binary structure stamps, creation dates, and author manipulation trails.
-3.  **Active Payload Carving**: Surgically extracts embedded compressed `.bin` or OLE files, computes SHA256 hashes, and indexes them.
-4.  **Forensic Image Audit**: Examines images (SVG/PNG/JPG) for SVG vector script injection or steganographic payloads.
-5.  **Offline Signature Scan**: Evaluates files against compiled YARA signature sets.
-6.  **Secure Sandbox Rendering**: Injects custom Content Security Policy (CSP) headers to preview files safely.
-7.  **Expert Decision Matrix**: Correlation of findings into an actionable, color-coded analyst threat index.
-
----
-
-## 📦 3. Module-by-Module Technical Specification
-
-### 🖥️ `panl/cli.py` (Command Line Entrypoint)
-*   **Role**: Direct command-line interaction and local terminal triage.
-*   **Learnings/Experience**: Integrated a dynamic root-path injection (`sys.path.insert`) to resolve package paths without requiring global system environmental variables.
-
-### 🌐 `panl/web.py` (Web Dashboard Server)
-*   **Role**: Serves the visual dashboard, charts, live report generation, and upload endpoints.
-*   **Learnings/Experience**: Implemented dynamic path helpers (`get_user_path` and `get_resource_path`) to enable seamless execution both as a local Flask instance and inside compiled standalone binaries.
-
-### 💾 `panl/database.py` (Persistence Engine)
-*   **Role**: Handles SQLite connection, database initialization (`init_db`), and saving/retrieving structured scan records.
-*   **Schema**:
-    *   `scans` Table: `id` (INTEGER PRIMARY KEY), `filename` (TEXT), `file_hash` (TEXT UNIQUE), `risk_score` (INTEGER), `findings_json` (TEXT), `created_at` (TIMESTAMP).
-
-### 🔍 `panl/modules/engine.py` (Triage Orchestrator)
-*   **Role**: The master engine that coordinates all modular sub-scanners, correlates threat vectors, and computes the final risk index.
-
-### 📄 `panl/modules/metadata.py` (Container Audit)
-*   **Role**: Parses author signatures, software producer origins, page counts, and modifications. Detects temporal manipulation (e.g., future creation dates).
-
-### 🏷️ `panl/modules/keywords.py` (Threat Trait Detector)
-*   **Role**: Identifies suspicious functional directives (like `/JS`, `/JavaScript`, `/OpenAction`, `/Launch`, `/EmbeddedFile`) inside the document stream.
-
-### ⚠️ `panl/modules/javascript.py` (Active Script Analyzer)
-*   **Role**: Audits JavaScript content extracted from PDF structures, evaluating it for obfuscation, high-entropy blocks, or dangerous commands (e.g., `eval`, `unescape`).
-
-### 🌐 `panl/modules/iocs.py` (Network Indicator Harvester)
-*   **Role**: Uses optimized regular expressions to scrape and index URLs, IPv4/IPv6 addresses, and email signatures hidden within binary containers.
-
-### 📊 `panl/modules/behavior.py` (Threat Indicator Mapping)
-*   **Role**: Generates a granular analyst logs timeline outlining malicious and suspicious indicators found.
-
-### 🧮 `panl/modules/risk_score.py` (Threat Heuristics Engine)
-*   **Role**: A multi-weighted mathematical matrix that evaluates structural findings (Metadata, YARA matches, active scripts, carved objects) to assign a finalized score from `0` (Clean) to `100` (Critical).
-
-### 🎯 `panl/modules/offline_scan.py` (YARA Scanning Loop)
-*   **Role**: Dynamically compiles and runs local signature sets located under the `rules/` directory to scan documents completely offline.
-
-### 📡 `panl/modules/vt_check.py` (Global Intelligence correlation)
-*   **Role**: Communicates with the public VirusTotal API using the client's optional API key to correlate local results with 70+ commercial antivirus engines.
-
-### 🗃️ `panl/modules/office.py` (OLE / Office Carving)
-*   **Role**: Employs `oletools.olevba` to parse Microsoft Office files, identify VBA macros, and extract OLE objects safely.
-
-### 🖼️ `panl/modules/ocr.py` (Image Evasion Audit)
-*   **Role**: Evaluates embedded image structures for SVG script insertion, PHP webshell signatures, or steganography vectors.
-
-### 🤖 `panl/modules/expert_system.py` (Expert Decision Report)
-*   **Role**: Analyzes the accumulated forensic indicators and translates them into an advanced, plain-English summary outlining specific TTPs (Tactics, Techniques, and Procedures).
-
----
-
-## 🧪 4. Zero-Trust Web Sandbox Architecture
-To protect analysts from dynamic script triggers, PNAL enforces a strict **Digital Blast Shield** during document inspection:
-
-1.  **Strict Content Security Policy (CSP)**:
-    *   During visual preview, the web server injects strict security headers:
-        ```http
-        Content-Security-Policy: default-src 'self'; script-src 'none'; object-src 'self'; connect-src 'none';
-        ```
-    *   This forces the browser to disable all dynamically executing scripts, inline scripts, and outbound AJAX or fetch requests.
-2.  **Structural Active Trigger Neutralization**:
-    *   Active execution parameters (e.g., `/JS` or `/OpenAction` triggers in PDFs) are neutralised at the byte stream level before rendering.
-
----
-
-## 🚀 5. Air-Gapped Deployment & Portability
-
-### 🖥️ Windows Standalone Compilation
-PNAL features complete compatibility with **PyInstaller** for zero-dependency standalone builds:
-*   **Dynamic Asset Bundling**: Inside compiled format, static templates and YARA rules are read directly from memory (`sys._MEIPASS` temp folder).
-*   **Persistent Writing**: Writable configurations (`config.json`), log archives, and database files (`panl.db`) are dynamically saved in the directory containing the compiled `pnal.exe` (`sys.executable` folder).
-
-### 🤖 CI/CD Automation (GitHub Actions)
-I implemented a robust **GitHub Actions** runner (`build-exe.yml`) that automates Windows binary compilation on push:
-```yaml
-name: Build Windows Portable Executable
-on: [push]
-jobs:
-  build:
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.11'
-      - run: pip install -r requirements.txt pyinstaller
-      - run: pyinstaller --onefile --name pnal --add-data "panl/templates;panl/templates" --add-data "rules;rules" --paths . panl/cli.py
+### **Step 3: Interactive Dashboard Triage**
+Start the Web Hub to access visual charts and interactive sandboxing:
+```bash
+panl dashboard
 ```
-This guarantees that tactical analysts in the field have immediate, zero-touch access to the standalone Windows executable.
+
+---
+
+## 📊 Conclusion & Strategic Value
+PANL successfully bridges the gap between passive antivirus scanners and highly complex, slow-running sandbox systems. By offering high-speed structural audits, active payload carving, and bulletproof web-isolated previews, PANL equips forensic analysts with an instant, air-gappable first line of defense.
